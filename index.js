@@ -10,6 +10,9 @@ import sendReminders from "./scripts/sendReminders.js";
 import { sendWeeklySummary } from "./jobs/weeklySummaryJob.js";
 import friendRoutes from "./routes/friendRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import contactRoutes from "./routes/contactRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
+import dashboardRoutes from "./routes/dashboardRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -28,6 +31,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api/habits", habitRoutes);
 app.use("/api/friends", friendRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/contact", contactRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 //! Automation Reminder:
 cron.schedule("0 8 * * *", () => {

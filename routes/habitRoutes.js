@@ -8,8 +8,22 @@ import {
   updateHabit,
   deleteHabit,
 } from "../controllers/habitController.js";
+import Habit from "../models/Habit.js";
 
 const router = express.Router();
+
+router.get("/public", async (req, res) => {
+  try {
+    const habits = await Habit.find()
+      .populate("user", "name") // Populate only the 'name' field from User
+      .exec();
+
+    res.status(200).json(habits);
+  } catch (err) {
+    console.error("Error fetching public habits:", err);
+    res.status(500).json({ message: "Error fetching public habits" });
+  }
+});
 
 router.use(protect); //! All below routes require auth
 
