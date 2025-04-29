@@ -49,3 +49,75 @@ export const getAdmins = async (req, res) => {
     res.status(500).json({ message: "Server error fetching admins." });
   }
 };
+
+//! Controller for creating a new admin
+export const createAdmin = async (req, res) => {
+  const { name, email, password } = req.body;
+
+  try {
+    // Check if the admin already exists
+    const existingAdmin = await Admin.findOne({ email });
+    if (existingAdmin) {
+      return res.status(400).json({ message: "Admin already exists." });
+    }
+
+    // Hash the password before saving it
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Create a new admin
+    const newAdmin = new Admin({
+      name,
+      email,
+      password: hashedPassword, // Store the hashed password
+    });
+
+    // Save the admin to the database
+    await newAdmin.save();
+
+    // Send the new admin as the response
+    res.status(201).json(newAdmin);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error." });
+  }
+};
+
+//! Update Admin:
+export const updateAdmin = async (req, res) => {
+  const { id } = req.params;
+  const { name, email } = req.body;
+
+  try {
+    const admin = await Admin.findById(id);
+    if (!admin) return res.status(404).json({ message: "Admin not found." });
+
+    admin.name = name || admin.name;
+    admin.email = email || admin.email;
+
+    const updatedAdmin = await admin.save();
+    res.json(updatedAdmin);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error." });
+  }
+};
+
+//! Delete Admin:
+export const deleteAdmin = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const admin = await Admin.findById(id);
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found." });
+    }
+
+    await Admin.findByIdAndDelete(id); // use this instead of admin.remove()
+
+    res.json({ message: "Admin deleted successfully." });
+  } catch (err) {
+    console.error("Delete admin error:", err);
+    res.status(500).json({ message: "Server error deleting admin." });
+  }
+};
