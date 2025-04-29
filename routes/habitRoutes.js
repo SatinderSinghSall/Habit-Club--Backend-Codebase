@@ -25,6 +25,20 @@ router.get("/public", async (req, res) => {
   }
 });
 
+//! DELETE a habit by ID
+router.delete("/:id", async (req, res) => {
+  try {
+    const habit = await Habit.findByIdAndDelete(req.params.id);
+    if (!habit) {
+      return res.status(404).json({ message: "Habit not found" });
+    }
+    res.status(200).json({ message: "Habit deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error deleting habit" });
+  }
+});
+
 router.use(protect); //! All below routes require auth
 
 router.post("/", createHabit);
