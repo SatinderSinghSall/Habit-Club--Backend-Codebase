@@ -40,7 +40,7 @@ const welcomeEmail = (name) => {
             <li><strong>🎯 Join a group for motivation</strong></li>
           </ul>
           <div style="text-align: center; margin-top: 32px;">
-            <a href="https://yourapp.com/dashboard" class="button" style="display: inline-block; background-color: #4f46e5; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-size: 16px; font-weight: 600;">
+            <a href="https://habit-club.vercel.app/dashboard" class="button" style="display: inline-block; background-color: #4f46e5; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-size: 16px; font-weight: 600;">
               Go to Dashboard →
             </a>
           </div>
