@@ -54,6 +54,13 @@ export const getAdmins = async (req, res) => {
 export const createAdmin = async (req, res) => {
   const { name, email, password } = req.body;
 
+  // ✅ ADD THIS VALIDATION CHECK
+  if (!name || !email || !password) {
+    return res
+      .status(400)
+      .json({ message: "All fields (name, email, password) are required." });
+  }
+
   try {
     // Check if the admin already exists
     const existingAdmin = await Admin.findOne({ email });
@@ -69,13 +76,12 @@ export const createAdmin = async (req, res) => {
     const newAdmin = new Admin({
       name,
       email,
-      password: hashedPassword, // Store the hashed password
+      password: hashedPassword,
     });
 
     // Save the admin to the database
     await newAdmin.save();
 
-    // Send the new admin as the response
     res.status(201).json(newAdmin);
   } catch (err) {
     console.error(err);
