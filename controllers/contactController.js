@@ -1,4 +1,7 @@
 import ContactMessage from "../models/ContactMessage.js";
+import sendEmail from "../utils/sendEmail.js";
+import contactEmail from "../utils/templates/contactEmail.js";
+import contactConfirmationEmail from "../utils/templates/contactConfirmationEmail.js";
 
 export const submitContactForm = async (req, res) => {
   const { name, email, message } = req.body;
@@ -8,9 +11,25 @@ export const submitContactForm = async (req, res) => {
   }
 
   try {
+    // 1. Save the message to MongoDB:
     const newMessage = new ContactMessage({ name, email, message });
-    await newMessage.save(); // 👈 Save into MongoDB
+    await newMessage.save();
 
+    // 2. Send email to your support/admin inbox:
+    await sendEmail({
+      to: process.env.SUPPORT_EMAIL,
+      subject: "New Contact Form Submission",
+      html: contactEmail({ name, email, message }),
+    });
+
+    // 3. Send confirmation email to the user:
+    await sendEmail({
+      to: email,
+      subject: "We've received your message!",
+      html: contactConfirmationEmail(name),
+    });
+
+    // 4. Respond to client:
     res.status(200).json({ message: "Thank you for contacting us!" });
   } catch (error) {
     console.error(error);
