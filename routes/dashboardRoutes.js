@@ -2,6 +2,7 @@ import express from "express";
 import User from "../models/User.js";
 import Habit from "../models/Habit.js";
 import ContactMessage from "../models/ContactMessage.js";
+import Admin from "../models/Admin.js";
 
 const router = express.Router();
 
@@ -10,6 +11,7 @@ router.get("/stats", async (req, res) => {
     const totalUsers = await User.countDocuments();
     const totalHabits = await Habit.countDocuments();
     const totalMessages = await ContactMessage.countDocuments();
+    const totalAdmin = await Admin.countDocuments();
 
     const users = await User.find(); // Fetch all users
 
@@ -33,6 +35,7 @@ router.get("/stats", async (req, res) => {
       activeUsers,
       inactiveUsers,
       newMessages: totalMessages,
+      totalAdmin,
     });
   } catch (error) {
     console.error("Failed to fetch stats:", error);
